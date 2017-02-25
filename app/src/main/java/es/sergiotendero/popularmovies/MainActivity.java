@@ -14,7 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.net.URL;
+import java.util.List;
 
+import es.sergiotendero.popularmovies.model.MovieData;
 import es.sergiotendero.popularmovies.utilities.MoviesDataJsonUtils;
 import es.sergiotendero.popularmovies.utilities.NetworkUtils;
 
@@ -83,14 +85,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(String[] movieData) {
+    public void onClick(MovieData movieData) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         // Send selected movie data to detail activity
         intent.putExtra(intent.EXTRA_TEXT, movieData);
         startActivity(intent);
     }
 
-    public class FetchMoviesDataTask extends AsyncTask<Integer, Void, String[][]> {
+    public class FetchMoviesDataTask extends AsyncTask<Integer, Void, List<MovieData>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
 
         @Override
-        protected String[][] doInBackground(Integer... integers) {
+        protected List<MovieData> doInBackground(Integer... integers) {
 
             // Constructs the URL using the first integer passed as parameter (which indicates sorting)
             URL moviesUrl = NetworkUtils.buildMovieDBUrl(integers[0].intValue());
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
 
         @Override
-        protected void onPostExecute(String[][] moviesData) {
+        protected void onPostExecute(List<MovieData> moviesData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (moviesData != null) {
                 showMoviesDataView();

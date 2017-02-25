@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import es.sergiotendero.popularmovies.utilities.MoviesDataJsonUtils;
+import es.sergiotendero.popularmovies.model.MovieData;
 
 /**
  * Activity for showing a movie data in detail
@@ -33,19 +33,19 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String[] movieData = intent.getStringArrayExtra(Intent.EXTRA_TEXT);
+            MovieData movieData = (MovieData) intent.getParcelableExtra(Intent.EXTRA_TEXT);
 
             // Format movie data in a String
             StringBuffer movieDataFormatted = new StringBuffer();
-            movieDataFormatted.append("Title: " + movieData[MoviesDataJsonUtils.POSITION_TITLE] + "\n\n");
-            movieDataFormatted.append("Release date: " + movieData[MoviesDataJsonUtils.POSITION_RELEASE_DATE] + "\n\n");
-            movieDataFormatted.append("Vote average: " + movieData[MoviesDataJsonUtils.POSITION_VOTE_AVERAGE] + "\n\n");
-            movieDataFormatted.append("Plot synopsis: " + movieData[MoviesDataJsonUtils.POSITION_OVERVIEW]);
+            movieDataFormatted.append("Title: " + movieData.getTitle() + "\n\n");
+            movieDataFormatted.append("Release date: " + movieData.getReleaseDate() + "\n\n");
+            movieDataFormatted.append("Vote average: " + movieData.getVoteAverage() + "\n\n");
+            movieDataFormatted.append("Plot synopsis: " + movieData.getOverview());
 
             mMovieDetail.setText(movieDataFormatted.toString());
 
             // Show movie poster
-            Picasso.with(this.getApplicationContext()).load(picassoBaseURLw342 + movieData[MoviesDataJsonUtils.POSITION_POSTER_PATH]).into(mMoviePoster);
+            Picasso.with(this.getApplicationContext()).load(picassoBaseURLw342 + movieData.getPosterPath()).into(mMoviePoster);
         }
     }
 }

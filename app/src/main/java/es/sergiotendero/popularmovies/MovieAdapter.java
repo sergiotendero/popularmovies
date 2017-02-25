@@ -10,7 +10,9 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import es.sergiotendero.popularmovies.utilities.MoviesDataJsonUtils;
+import java.util.List;
+
+import es.sergiotendero.popularmovies.model.MovieData;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
@@ -18,7 +20,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private final String picassoBaseURLw185 = "http://image.tmdb.org/t/p/w185/";
 
     // Store movies data recovered form internet
-    private String[][] moviesData;
+    private List<MovieData> moviesData;
 
     private MovieAdapterOnClickHandler mMovieAdapterOnClickHandler;
 
@@ -40,16 +42,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Context context = ((Activity) mMovieAdapterOnClickHandler).getApplicationContext();
 
         // Load movie poster
-        Picasso.with(context).load(picassoBaseURLw185 + moviesData[position][MoviesDataJsonUtils.POSITION_POSTER_PATH]).into(holder.mImageView);
+        Picasso.with(context).load(picassoBaseURLw185 + moviesData.get(position).getPosterPath()).into(holder.mImageView);
     }
 
     @Override
     public int getItemCount() {
         if (null == moviesData) return 0;
-        return moviesData.length;
+        return moviesData.size();
     }
 
-    public void setMoviesData(String[][] moviesData) {
+    public void setMoviesData(List<MovieData> moviesData) {
         this.moviesData = moviesData;
         notifyDataSetChanged();
     }
@@ -67,11 +69,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             // Receives the event and invokes the handler
-            mMovieAdapterOnClickHandler.onClick(moviesData[getAdapterPosition()]);
+            mMovieAdapterOnClickHandler.onClick(moviesData.get(getAdapterPosition()));
         }
     }
 
     public interface MovieAdapterOnClickHandler {
-        void onClick(String[] movieData);
+        void onClick(MovieData movieData);
     }
 }

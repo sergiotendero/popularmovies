@@ -4,6 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import es.sergiotendero.popularmovies.model.MovieData;
+
 /**
  * Utility functions to handle The Movie Database API JSON data
  */
@@ -17,32 +22,16 @@ public final class MoviesDataJsonUtils {
     public static final String ATT_VOTE_AVERAGE = "vote_average";
     public static final String ATT_OVERVIEW = "overview";
 
-    public static final int POSITION_ID = 0;
-    public static final int POSITION_TITLE = 1;
-    public static final int POSITION_RELEASE_DATE = 2;
-    public static final int POSITION_POSTER_PATH = 3;
-    public static final int POSITION_VOTE_AVERAGE = 4;
-    public static final int POSITION_OVERVIEW = 5;
-
-
     /**
-     * This method parses movie data in JSON to a bi-dimensional String array
-     * For each movie it will be a String array with its data.
-     * Movie Data structure:
-     * parsedMoviesData [i][0] -> id
-     * parsedMoviesData [i][1] -> title
-     * parsedMoviesData [i][2] -> release_date
-     * parsedMoviesData [i][3] -> poster_path
-     * parsedMoviesData [i][4] -> vote_average
-     * parsedMoviesData [i][5] -> overview
+     * This method parses movie data in JSON to a List of MovieData
      *
      * @param jsonDataStr movies data in JSON format
-     * @return bi-dimensional String array with movies data
+     * @return List of MovieData
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    public static String[][] getMoviesDataFromJson(String jsonDataStr) throws JSONException {
+    public static List<MovieData> getMoviesDataFromJson(String jsonDataStr) throws JSONException {
 
-        String[][] parsedMoviesData = null;
+        List<MovieData> parsedMoviesData = new ArrayList<MovieData>();
 
         // Extract main json object
         JSONObject jsonData = new JSONObject(jsonDataStr);
@@ -50,22 +39,21 @@ public final class MoviesDataJsonUtils {
         // Extract results
         JSONArray jsonMovieList = jsonData.getJSONArray(RESULTS_LIST);
 
-        // Initialize movies data structure (each movie will have six positions of data)
-        parsedMoviesData = new String[jsonMovieList.length()][6];
-
-
         // Convert movies data from json object to String[6]
         for (int i = 0; i < jsonMovieList.length(); i++) {
 
             JSONObject jsonMovie = jsonMovieList.getJSONObject(i);
 
-            parsedMoviesData[i][POSITION_ID] = jsonMovie.getString(MoviesDataJsonUtils.ATT_ID);
-            parsedMoviesData[i][POSITION_TITLE] = jsonMovie.getString(MoviesDataJsonUtils.ATT_TITLE);
-            parsedMoviesData[i][POSITION_RELEASE_DATE] = jsonMovie.getString(MoviesDataJsonUtils.ATT_RELEASE_DATE);
-            parsedMoviesData[i][POSITION_POSTER_PATH] = jsonMovie.getString(MoviesDataJsonUtils.ATT_POSTER_PATH);
-            parsedMoviesData[i][POSITION_VOTE_AVERAGE] = jsonMovie.getString(MoviesDataJsonUtils.ATT_VOTE_AVERAGE);
-            parsedMoviesData[i][POSITION_OVERVIEW] = jsonMovie.getString(MoviesDataJsonUtils.ATT_OVERVIEW);
+            MovieData movieData = new MovieData();
 
+            movieData.setId(Integer.parseInt(jsonMovie.getString(MoviesDataJsonUtils.ATT_ID)));
+            movieData.setTitle(jsonMovie.getString(MoviesDataJsonUtils.ATT_TITLE));
+            movieData.setReleaseDate(jsonMovie.getString(MoviesDataJsonUtils.ATT_RELEASE_DATE));
+            movieData.setPosterPath(jsonMovie.getString(MoviesDataJsonUtils.ATT_POSTER_PATH));
+            movieData.setVoteAverage(jsonMovie.getString(MoviesDataJsonUtils.ATT_VOTE_AVERAGE));
+            movieData.setOverview(jsonMovie.getString(MoviesDataJsonUtils.ATT_OVERVIEW));
+
+            parsedMoviesData.add(movieData);
         }
 
         return parsedMoviesData;
