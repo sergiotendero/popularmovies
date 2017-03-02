@@ -21,6 +21,7 @@ android {
             it.buildConfigField 'String', 'THE_MOVIE_DB_API_TOKEN', MyTheMovieDBApiToken
         }
     }
+    dataBinding.enabled = true;
 }
 
 repositories {
@@ -43,4 +44,7 @@ dependencies {
 
     // Include appcompat for compatibility reasons
     compile 'com.android.support:appcompat-v7:25.1.0'
+
+    // Constraint layout dependency
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
 }

@@ -26,6 +26,8 @@ public final class NetworkUtils {
     private static final String MOVIEDB_URL_RATED =
             "http://api.themoviedb.org/3/movie/top_rated";
 
+    private static final String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie/";
+
 
     private final static String API_PARAM = "api_key";
 
@@ -44,6 +46,44 @@ public final class NetworkUtils {
         // sort value indicates which base url has to be used
         String baseURL = sort == MainActivity.SORT_BY_MOST_POPULAR ? MOVIEDB_URL_POPULAR : MOVIEDB_URL_RATED;
 
+        return buildURLfromBase(baseURL);
+    }
+
+    /**
+     * Builds the URL used to talk to the movie server for recovering movie's trailers
+     *
+     * @param movieID The movie's id
+     * @return The URL to use to query the server
+     */
+    public static URL buildMovieTrailersDBUrl(int movieID) {
+
+        // Url for querying videos is /movie/{id}/videos
+        String baseURL = MOVIEDB_BASE_URL + movieID + "/videos";
+
+        return buildURLfromBase(baseURL);
+    }
+
+    /**
+     * Builds the URL used to talk to the movie server for recovering movie's reviews
+     *
+     * @param movieID The movie's id
+     * @return The URL to use to query the server
+     */
+    public static URL buildMovieReviewsDBUrl(int movieID) {
+
+        // Url for querying videos is /movie/{id}/reviews
+        String baseURL = MOVIEDB_BASE_URL + movieID + "/reviews";
+
+        return buildURLfromBase(baseURL);
+    }
+
+    /**
+     * Builds an URL from a base URL String
+     *
+     * @param baseURL Base URL string
+     * @return Build URL
+     */
+    private static URL buildURLfromBase(String baseURL) {
         Uri builtUri = Uri.parse(baseURL).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)
                 .build();

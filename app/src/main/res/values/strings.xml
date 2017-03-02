@@ -3,4 +3,9 @@
     <string name="no_data_available_message">No data available. Please, test your data connection and retry.</string>
     <string name="item_popular">Sort by most popular</string>
     <string name="item_rated">Sort by highest rated</string>
+    <string name="movie_detail_activity_label">Movie Details</string>
+    <string name="movie_detail_release_date_label">Release date</string>
+    <string name="movie_detail_vote_average_label">Vote average</string>
+    <string name="trailers_label">Trailers:</string>
+    <string name="reviews_label">Reviews:</string>
 </resources>
