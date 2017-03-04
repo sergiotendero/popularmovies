@@ -20,6 +20,10 @@
         <activity android:name=".MovieDetailActivity"
             android:label="@string/movie_detail_activity_label"
             ></activity>
+        <provider
+            android:name=".data.MovieContentProvider"
+            android:authorities="es.sergiotendero.popularmovies"
+            android:exported="false"/>
     </application>
 
 </manifest>

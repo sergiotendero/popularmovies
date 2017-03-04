@@ -8,4 +8,8 @@
     <string name="movie_detail_vote_average_label">Vote average</string>
     <string name="trailers_label">Trailers:</string>
     <string name="reviews_label">Reviews:</string>
+    <string name="mark_favorite">Mark as favorite</string>
+    <string name="unmark_favorite">Unmark as favorite</string>
+    <string name="item_favorites">My favorites</string>
+    <string name="poster_description">Movie poster image</string>
 </resources>

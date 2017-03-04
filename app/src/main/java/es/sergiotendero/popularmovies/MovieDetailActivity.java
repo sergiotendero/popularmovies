@@ -1,22 +1,28 @@
 package es.sergiotendero.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.List;
 
+import es.sergiotendero.popularmovies.data.MovieContract;
 import es.sergiotendero.popularmovies.databinding.ActivityMovieDetailBinding;
 import es.sergiotendero.popularmovies.model.MovieData;
 import es.sergiotendero.popularmovies.model.ReviewData;
@@ -28,6 +34,8 @@ import es.sergiotendero.popularmovies.utilities.NetworkUtils;
  * Activity for showing a movie data in detail
  */
 public class MovieDetailActivity extends AppCompatActivity {
+
+    private static final String TAG = "MovieDetailActivity";
 
     // In detailed movie activity images will be 342 sized
     private final String picassoBaseURLw342 = "http://image.tmdb.org/t/p/w342/";
@@ -72,6 +80,24 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Load trailers & reviews of the selected movie
             new FetchTrailersAndReviewsDataTask().execute();
         }
+
+        ToggleButton toggleButton = mBinding.tbFavorite;
+
+        // Check if its favorite
+        toggleButton.setChecked(isFavorite());
+
+        // Defines favorite switch behaviour
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Save movie as favorite
+                    saveAsFavorite();
+                } else {
+                    // Delete movie as favorite
+                    deleteAsFavorite();
+                }
+            }
+        });
     }
 
     /**
@@ -124,6 +150,74 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         // Associate the adapter to the ListView which render the data
         reviewsListView.setAdapter(reviewsAdapter);
+    }
+
+    /**
+     * Save movie as favorite in content provider
+     */
+    private void saveAsFavorite() {
+        // Create new empty ContentValues object
+        ContentValues contentValues = new ContentValues();
+        // Put the movie data into the ContentValues
+        contentValues.put(MovieContract.MovieEntry._ID, mMovieData.getId());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovieData.getTitle());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovieData.getReleaseDate());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, mMovieData.getPosterPath());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, mMovieData.getVoteAverage());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovieData.getOverview());
+        // Insert the content values via a ContentResolver
+        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+        Log.d(TAG, "Favorite inserted: " + uri);
+    }
+
+    /**
+     * Delete movie as favorite in content provider
+     */
+    private void deleteAsFavorite() {
+
+        // Get id to construct URL
+        String stringId = Integer.toString(mMovieData.getId());
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+        // Remove movie form favorites
+        int deleted = getContentResolver().delete(uri, null, null);
+
+        if (deleted > 0) {
+            Log.d(TAG, "Favorite deleted");
+        }
+    }
+
+    /**
+     * Query if the movie is saved as favorite
+     *
+     * @return true if its favorite false otherwise
+     */
+    private boolean isFavorite() {
+
+        boolean isFavorite = false;
+        Cursor cursor = null;
+
+        try {
+            // Get id to construct URL
+            String stringId = Integer.toString(mMovieData.getId());
+            Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(stringId).build();
+
+            // Query if movie is favorite
+            cursor = getContentResolver().query(uri, null, null, null, null);
+            // If returns a row is supposed to be favorite
+            isFavorite = cursor.moveToNext();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return isFavorite;
     }
 
 

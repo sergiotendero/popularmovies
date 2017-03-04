@@ -1,6 +1,7 @@
 package es.sergiotendero.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import es.sergiotendero.popularmovies.data.MovieContract;
 import es.sergiotendero.popularmovies.model.MovieData;
 import es.sergiotendero.popularmovies.utilities.MoviesDataJsonUtils;
 import es.sergiotendero.popularmovies.utilities.NetworkUtils;
@@ -151,6 +154,56 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             return true;
         }
 
+        if (id == R.id.action_favorites) {
+            showFavorites();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Recovers favorite movie data from a private Content provider
+     * It could be better to implement as background task, but for simplicity reasons it will
+     * be executed on UI thread
+     */
+    private void showFavorites() {
+
+        try {
+
+            // Queries content resolver for movie data
+            Cursor cursorMovies = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, null);
+
+            // Creates a List of MovieData objects from cursor
+
+            int idCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry._ID);
+            int titleCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
+            int releaseDataCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+            int posterCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
+            int voteAverageCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE);
+            int overviewCol = cursorMovies.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW);
+
+            List<MovieData> listMovies = new ArrayList<MovieData>();
+
+            while (cursorMovies.moveToNext()) {
+                MovieData movie = new MovieData();
+                movie.setId(cursorMovies.getInt(idCol));
+                movie.setTitle(cursorMovies.getString(titleCol));
+                movie.setReleaseDate(cursorMovies.getString(releaseDataCol));
+                movie.setPosterPath(cursorMovies.getString(posterCol));
+                movie.setVoteAverage(cursorMovies.getString(voteAverageCol));
+                movie.setOverview(cursorMovies.getString(overviewCol));
+
+                listMovies.add(movie);
+            }
+            cursorMovies.close();
+
+            // Set movies data
+            mMovieAdapter.setMoviesData(listMovies);
+            showMoviesDataView();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorMessage();
+        }
     }
 }

@@ -10,25 +10,24 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/i_movie_poster"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:contentDescription="@string/poster_description"/>
 
             <TextView
                 android:id="@+id/tv_movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/i_movie_poster"
                 android:gravity="center_horizontal"
                 android:maxWidth="220dp"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -36,29 +35,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_movie_title"
-                android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/i_movie_poster"
-                android:textSize="14sp"/>
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_movie_vote_average"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_movie_release_date"
-                android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/i_movie_poster"
-                android:textSize="14sp"/>
+                android:textSize="12sp"/>
 
             <ToggleButton
                 android:id="@+id/tb_favorite"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_movie_vote_average"
-                android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/i_movie_poster"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_movie_title"
+                android:layout_marginRight="5dp"
                 android:textOff="@string/mark_favorite"
                 android:textOn="@string/unmark_favorite"
-                android:textSize="12sp"/>
+                android:textSize="10sp"/>
 
         </RelativeLayout>
 
@@ -73,38 +70,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:textSize="12sp"/>
+                android:textSize="10sp"/>
 
-            <TextView
-                android:id="@+id/tv_trailers_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/trailers_label"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-            <ListView
-                android:id="@+id/lv_trailers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_reviews_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/reviews_label"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_trailers_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/trailers_label"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
 
-            <ListView
-                android:id="@+id/lv_reviews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                    <ListView
+                        android:id="@+id/lv_trailers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/tv_reviews_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/reviews_label"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+
+                    <ListView
+                        android:id="@+id/lv_reviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
 
 </layout>
