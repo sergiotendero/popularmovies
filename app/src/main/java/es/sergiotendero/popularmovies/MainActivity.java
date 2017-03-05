@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Initialize recycler view component
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 
-        // It will show 4 movies by row
-        mGridLayoutManager = new GridLayoutManager(this, 4);
+        // Number of columns depends on device screen resolution
+        mGridLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this));
 
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -267,5 +268,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onSaveInstanceState(outState);
         // Saves the scroll position
         outState.putInt(CURRENT_SCROLL_POSITION, mGridLayoutManager.findFirstVisibleItemPosition());
+    }
+
+    /**
+     * Calculate the number of possible columns at runtime
+     *
+     * @param context
+     * @return number of columns to render
+     */
+    protected int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / 180);
+        return noOfColumns;
     }
 }
