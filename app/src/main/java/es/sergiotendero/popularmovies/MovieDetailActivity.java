@@ -7,8 +7,10 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -98,6 +100,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // For allowing up navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -218,6 +223,17 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }
         return isFavorite;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

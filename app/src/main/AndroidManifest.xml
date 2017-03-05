@@ -19,7 +19,12 @@
         </activity>
         <activity android:name=".MovieDetailActivity"
             android:label="@string/movie_detail_activity_label"
-            ></activity>
+            >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <provider
             android:name=".data.MovieContentProvider"
             android:authorities="es.sergiotendero.popularmovies"
