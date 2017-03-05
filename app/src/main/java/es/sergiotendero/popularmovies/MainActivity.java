@@ -1,6 +1,8 @@
 package es.sergiotendero.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     public static final int SORT_BY_MOST_POPULAR = 1;
     public static final int SORT_BY_HIGHEST_RATED = 2;
+    public static final int FAVORITES = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
 
 
-        // By default load most popular movies
-        loadMoviesData(SORT_BY_MOST_POPULAR);
+        // Recovers user preference for showing movies
+        int savedPreference = readMoviesOption();
+        if (savedPreference == FAVORITES) {
+            showFavorites();
+        } else {
+            loadMoviesData(savedPreference);
+        }
 
     }
 
@@ -145,16 +153,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
+            // Save user preference
+            writeMoviesOption(SORT_BY_MOST_POPULAR);
             loadMoviesData(SORT_BY_MOST_POPULAR);
             return true;
         }
 
         if (id == R.id.action_rated) {
+            // Save user preference
+            writeMoviesOption(SORT_BY_HIGHEST_RATED);
             loadMoviesData(SORT_BY_HIGHEST_RATED);
             return true;
         }
 
         if (id == R.id.action_favorites) {
+            // Save user preference
+            writeMoviesOption(FAVORITES);
             showFavorites();
             return true;
         }
@@ -205,5 +219,34 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             e.printStackTrace();
             showErrorMessage();
         }
+    }
+
+    /**
+     * Reads which movies (most popular, highest rated, favorites) user selected to show last time
+     *
+     * @return A constant that identifies the option
+     */
+    private int readMoviesOption() {
+
+        // The selected option is loaded from a private SharedPreferences file
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        int defaultValue = Integer.parseInt(getResources().getString(R.string.search_option_default));
+        return sharedPref.getInt(getString(R.string.search_option_key), defaultValue);
+    }
+
+    /**
+     * Writes which movies (most popular, highest rated, favorites) user selected to show last time
+     */
+    private void writeMoviesOption(int search_option) {
+
+        // The selected option is saved in a private SharedPreferences file
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.search_option_key), search_option);
+        editor.commit();
     }
 }
