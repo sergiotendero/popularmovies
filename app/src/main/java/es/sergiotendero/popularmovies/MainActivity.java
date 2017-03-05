@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final int SORT_BY_HIGHEST_RATED = 2;
     public static final int FAVORITES = 3;
 
+    public static final String CURRENT_SCROLL_POSITION = "current_scroll_position";
+
+    GridLayoutManager mGridLayoutManager;
+    private int currentScrollPosition = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +53,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 
         // It will show 4 movies by row
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
+        mGridLayoutManager = new GridLayoutManager(this, 4);
 
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         mMovieAdapter = new MovieAdapter(this);
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
+        // Restore the scroll position
+        if (savedInstanceState != null) {
+            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
+        }
 
         // Recovers user preference for showing movies
         int savedPreference = readMoviesOption();
@@ -134,7 +143,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             if (moviesData != null) {
                 showMoviesDataView();
                 mMovieAdapter.setMoviesData(moviesData);
-
+                // Scroll back to previous position
+                mRecyclerView.smoothScrollToPosition(currentScrollPosition);
             } else {
                 showErrorMessage();
             }
@@ -215,6 +225,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             // Set movies data
             mMovieAdapter.setMoviesData(listMovies);
             showMoviesDataView();
+            // Scroll back to previous position
+            mRecyclerView.smoothScrollToPosition(currentScrollPosition);
         } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage();
@@ -248,5 +260,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(getString(R.string.search_option_key), search_option);
         editor.commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Saves the scroll position
+        outState.putInt(CURRENT_SCROLL_POSITION, mGridLayoutManager.findFirstVisibleItemPosition());
     }
 }
